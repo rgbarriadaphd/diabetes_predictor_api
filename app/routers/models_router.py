@@ -4,7 +4,7 @@
 # Project: diabetes_predictor_api
 # File: models_router.py
 
-Description: Define routes for models
+Description: Define routers for models
 """
 from typing import Union
 

@@ -10,7 +10,9 @@ import joblib
 from sklearn.datasets import load_diabetes
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LinearRegression, Ridge, Lasso
-from app.core.config import settings
+from sklearn.metrics import mean_squared_error
+
+from math import sqrt
 import numpy as np
 from abc import ABC
 from typing import Any
@@ -24,9 +26,10 @@ class BaseLinearRegressionModel(ABC):
         diabetes = load_diabetes()
         x = diabetes.data
         y = diabetes.target
-        x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.2, random_state=42)
+        x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.2)
         self.model.fit(x_train, y_train)
-        return self.model.score(x_test, y_test)
+        y_pred = self.model.predict(x_test)
+        return sqrt(mean_squared_error(y_test, y_pred))
 
     def predict(self, x: np.ndarray) -> Any:
         return self.model.predict(x)

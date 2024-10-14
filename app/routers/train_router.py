@@ -4,7 +4,7 @@
 # Project: diabetes_predictor_api
 # File: train_router.py
 
-Description: Define routes for train
+Description: Define routers for train
 """
 from fastapi import APIRouter, HTTPException
 
@@ -16,14 +16,13 @@ router = APIRouter(
 
 
 @router.post("/{model_name}")
-def predict(model_name: str, alpha: float = 1.0):
+def train(model_name: str, alpha: float = 1.0):
     try:
         model = get_model(model_name, alpha=alpha)
-        metrics = model.train()
+        rmse = model.train()
         return {
             "message": f"Model {model_name} trained successfully.",
-            "metrics": metrics
+            "rmse": rmse
         }
-
     except:
         raise HTTPException(status_code=404, detail=f"Model {model_name} not found")
