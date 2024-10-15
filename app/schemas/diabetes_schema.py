@@ -4,7 +4,7 @@
 # Project: diabetes_predictor_api
 # File: diabetes_schema.py
 
-Description: "Enter description here"
+Description: Schema definition for diabetes data
 """
 from pydantic import BaseModel
 

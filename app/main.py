@@ -8,15 +8,19 @@ Description: Application entry point.
 """
 from fastapi import FastAPI
 
+from app.ml.dataset import DiabetesDataset
 from app.routers import predict_router, models_router, train_router
 
 app = FastAPI()
 app.title = "Diabetes Progression Predictor API"
 
-
 app.include_router(predict_router.router)
 app.include_router(models_router.router)
 app.include_router(train_router.router)
+
+# dataset instance (Singleton)
+diabetes_dataset = DiabetesDataset()
+
 
 @app.get("/")
 async def home():

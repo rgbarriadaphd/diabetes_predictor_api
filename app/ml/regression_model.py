@@ -17,19 +17,30 @@ import numpy as np
 from abc import ABC
 from typing import Any
 
+from app.ml.dataset import DiabetesDataset
+from app.schemas.model_schema import RegressionModelType
+
 
 class BaseLinearRegressionModel(ABC):
     def __init__(self, model: Any):
+        self.dataset = DiabetesDataset()
         self.model = model
 
-    def train(self) -> float:
-        diabetes = load_diabetes()
-        x = diabetes.data
-        y = diabetes.target
+    def train(self) -> (float, float):
+        x = self.dataset.data
+        y = self.dataset.target
         x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.2)
         self.model.fit(x_train, y_train)
-        y_pred = self.model.predict(x_test)
-        return sqrt(mean_squared_error(y_test, y_pred))
+
+        # Get prediction of training data
+        y_pred_train = self.model.predict(x_train)
+        rmse_train = sqrt(mean_squared_error(y_train, y_pred_train))
+
+        # Get prediction of test data
+        y_pred_test = self.model.predict(x_test)
+        rmse_test = sqrt(mean_squared_error(y_test, y_pred_test))
+
+        return rmse_train, rmse_test
 
     def predict(self, x: np.ndarray) -> Any:
         return self.model.predict(x)
@@ -51,14 +62,13 @@ class LassoRegressionModel(BaseLinearRegressionModel):
 
 
 # Factory to instance the model based on name
-def get_model(model_name: str, **kwargs) -> BaseLinearRegressionModel:
-    print(f"** Model name: {model_name}")
-    if model_name == "LinearRegression":
+def get_model(request_model: RegressionModelType, **kwargs) -> BaseLinearRegressionModel:
+    if request_model == "linear":
         return LinearRegressionModel()
-    elif model_name == "Ridge":
+    elif request_model == "ridge":
         return RidgeRegressionModel(**kwargs)
-    elif model_name == "Lasso":
+    elif request_model == "lasso":
         return LassoRegressionModel(**kwargs)
     else:
-        raise ValueError(f"Model '{model_name}' not supported")
+        raise ValueError(f"Model '{request_model}' not supported")
 
