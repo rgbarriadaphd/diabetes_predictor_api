@@ -16,15 +16,11 @@ class RegressionModelType(str, Enum):
     ridge = "ridge"
     lasso = "lasso"
 
-class RegressionModel(BaseModel):
+class RegressionModelSchema(BaseModel):
+    id: Optional[int] = None
     name: str = Field(title="Name of the model", max_length=30)
     description: str = Field(title="Description of the model", min_length=5, max_length=300)
-    regression_model: RegressionModelType
-
-
-class ModelData(BaseModel):
-    id: Optional[int] = None
-    model: RegressionModel
+    model_type: RegressionModelType
     trained: bool = Field(title="Whether the model is trained or not")
     train_error: Optional[float] = None
     test_error: Optional[float] = None
